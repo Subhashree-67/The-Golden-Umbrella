@@ -1,0 +1,448 @@
+/* The Golden Umbrella - styles. Cozy dark-slate page, warm cream cards. */
+:root {
+    --slate: #1d2430;
+    --slate-2: #2a3342;
+    --gold: #ffcf70;
+    --cream: #fbf1dc;
+    --brown: #5a3b22;
+    --ember: #c8553d;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.hidden {
+    display: none !important;
+}
+
+html,
+body {
+    margin: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top, var(--slate-2), var(--slate) 70%);
+    color: #dfe6f1;
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 12px 30px;
+}
+
+header {
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    color: var(--gold);
+    letter-spacing: .02em;
+    text-shadow: 0 2px 18px rgba(255, 170, 60, .35);
+}
+
+.sub {
+    margin: 4px 0 12px;
+    color: #9fb0c8;
+    font-style: italic;
+}
+
+#controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    color: #8b9bb2;
+    margin-bottom: 12px;
+}
+
+.sep {
+    opacity: .4;
+}
+
+#stage {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 14px 50px rgba(0, 0, 0, .55), 0 0 0 1px #3a4659;
+}
+
+#game {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 900 / 500;
+    background: #26324a;
+}
+
+/* Dialogue card over the canvas */
+#dialogue {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: 4%;
+    background: var(--cream);
+    color: var(--brown);
+    border: 2px solid #d9b98a;
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .4);
+}
+
+#dlg-name {
+    font-weight: bold;
+    color: var(--ember);
+    margin-bottom: 4px;
+}
+
+#dlg-text {
+    margin: 0 0 10px;
+    line-height: 1.5;
+    font-size: clamp(.9rem, 2.2vw, 1.05rem);
+}
+
+#dlg-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#dlg-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+#dlg-input-row input {
+    flex: 1;
+}
+
+.btn {
+    font: inherit;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #c9a46a;
+    background: #fff8e8;
+    color: var(--brown);
+}
+
+.btn:hover {
+    background: #ffeec7;
+}
+
+.btn.primary {
+    background: #f2b134;
+    border-color: #d99a1f;
+    font-weight: bold;
+}
+
+.btn.primary:hover {
+    background: #ffc24d;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid #4a8fd9;
+    outline-offset: 2px;
+}
+
+input[type="text"] {
+    font: inherit;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid #c9a46a;
+    background: #fffdf6;
+    color: var(--brown);
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 14, 20, .78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    z-index: 10;
+    overflow: auto;
+}
+
+.modal-card {
+    background: var(--cream);
+    color: var(--brown);
+    border-radius: 16px;
+    padding: 22px;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+}
+
+.modal-card.wide {
+    max-width: 940px;
+    align-items: center;
+}
+
+.modal-card h2 {
+    margin: 0 0 4px;
+    color: var(--ember);
+}
+
+.modal-card label {
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+#postcard {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .3);
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- Deluxe: HUD ---------- */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(rgba(12, 16, 24, .6), rgba(12, 16, 24, 0));
+    font-size: .9rem;
+    color: #f3e3b8;
+    pointer-events: none;
+}
+
+#hud>* {
+    pointer-events: auto;
+}
+
+.warmth,
+.hud-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lanterns {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.lanterns i {
+    width: 10px;
+    height: 15px;
+    border-radius: 4px 4px 5px 5px;
+    background: #3a4558;
+    border: 1px solid #55627a;
+    transition: background .6s, box-shadow .6s;
+}
+
+.lanterns i.lit {
+    background: #ffd27a;
+    border-color: #ffe9a6;
+    box-shadow: 0 0 10px 2px rgba(255, 200, 90, .85);
+}
+
+.hud-btn {
+    font: inherit;
+    color: #f3e3b8;
+    background: rgba(20, 26, 38, .55);
+    border: 1px solid rgba(255, 226, 154, .35);
+    border-radius: 999px;
+    padding: 4px 14px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+}
+
+.hud-btn.icon {
+    padding: 5px 8px;
+    display: inline-flex;
+}
+
+.hud-btn:hover {
+    border-color: #ffe29a;
+    background: rgba(40, 48, 66, .7);
+}
+
+.hud-btn .slash {
+    display: none;
+}
+
+.hud-btn.muted .waves {
+    display: none;
+}
+
+.hud-btn.muted .slash {
+    display: inline;
+}
+
+/* ---------- Deluxe: Memory Journal drawer ---------- */
+#journal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(320px, 85%);
+    z-index: 3;
+    background: rgba(251, 241, 220, .97);
+    color: var(--brown);
+    padding: 14px 16px;
+    overflow-y: auto;
+    transform: translateX(105%);
+    visibility: hidden;
+    transition: transform .3s ease, visibility .3s;
+    box-shadow: -8px 0 30px rgba(0, 0, 0, .4);
+}
+
+#journal.open {
+    transform: none;
+    visibility: visible;
+}
+
+.jhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.jhead h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--ember);
+}
+
+.jhead button {
+    font-size: 1.6rem;
+    line-height: 1;
+    background: none;
+    border: 0;
+    color: var(--brown);
+    cursor: pointer;
+}
+
+#journal-list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+#journal-list li {
+    background: #fff8e8;
+    border: 1px solid #e3c995;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: grid;
+    gap: 4px;
+}
+
+#journal-list li.empty {
+    font-style: italic;
+    opacity: .75;
+}
+
+#journal-list span {
+    font-size: .9rem;
+}
+
+#journal-list q {
+    font-style: italic;
+    font-size: .88rem;
+    color: #7a3b12;
+}
+
+/* ---------- Deluxe: Title screen ---------- */
+#title {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    background: radial-gradient(ellipse at center, rgba(14, 20, 34, .35), rgba(10, 14, 24, .72));
+    backdrop-filter: blur(1.5px);
+}
+
+.title-card {
+    padding: 20px;
+    max-width: 520px;
+}
+
+.title-card h2 {
+    margin: 0 0 10px;
+    font-size: clamp(2rem, 7vw, 3.6rem);
+    font-style: italic;
+    color: #ffe29a;
+    text-shadow: 0 0 24px rgba(255, 190, 80, .55), 0 3px 12px rgba(0, 0, 0, .6);
+}
+
+.title-card p {
+    margin: 0 0 22px;
+    font-size: clamp(1rem, 2.6vw, 1.2rem);
+    color: #dfe6f1;
+    line-height: 1.5;
+}
+
+.glow-btn {
+    font: inherit;
+    font-size: 1.15rem;
+    padding: 12px 34px;
+    border-radius: 999px;
+    cursor: pointer;
+    color: #4a2a10;
+    background: linear-gradient(#ffd97a, #f2b134);
+    border: 0;
+    box-shadow: 0 0 22px 4px rgba(255, 200, 90, .55);
+    animation: pulse 2.6s ease-in-out infinite;
+}
+
+.glow-btn:hover {
+    box-shadow: 0 0 34px 8px rgba(255, 210, 110, .8);
+}
+
+@keyframes pulse {
+    50% {
+        box-shadow: 0 0 36px 10px rgba(255, 200, 90, .75);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .glow-btn {
+        animation: none;
+    }
+
+    #journal {
+        transition: none;
+    }
+}
