@@ -1,102 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The Golden Umbrella · Maple Lane</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The Golden Umbrella · Maple Lane</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header>
-        <h1>The Golden Umbrella</h1>
-        <p class="sub">What are you thankful for?</p>
-    </header>
+  <header>
+    <h1>The Golden Umbrella</h1>
+    <p class="sub">What are you thankful for?</p>
+  </header>
 
-    <div id="controls">
-        <span>Move: A/D or Left/Right Arrows</span><span class="sep">|</span>
-        <span>Interact: E or Click</span><span class="sep">|</span>
-        <span>Toggle Sound: M</span><span class="sep">|</span>
-        <span>Journal: J</span>
+  <div id="controls">
+    <span>Move: A/D or Left/Right Arrows</span><span class="sep">|</span>
+    <span>Interact: E or Click</span><span class="sep">|</span>
+    <span>Toggle Sound: M</span><span class="sep">|</span>
+    <span>Journal: J</span>
+  </div>
+
+  <p id="rotate-tip">Tip: turn your phone sideways for a bigger view.</p>
+
+  <main id="stage">
+    <canvas id="game" width="900" height="500" aria-label="Maple Lane game canvas"></canvas>
+
+    <!-- Top HUD: warmth progress, journal, sound -->
+    <div id="hud" class="hidden">
+      <div class="warmth">
+        <span class="lanterns" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span id="warmth-text">0 / 4 Kindnesses Shared</span>
+      </div>
+      <div class="hud-actions">
+        <button id="journal-btn" type="button" class="hud-btn">Memory Journal</button>
+        <button id="sound-btn" type="button" class="hud-btn icon" aria-label="Toggle sound (M)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>
+            <path class="waves" d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12"/>
+            <path class="slash" d="M4 4l16 16"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <main id="stage">
-        <canvas id="game" width="900" height="500" aria-label="Maple Lane game canvas"></canvas>
+    <!-- Memory Journal drawer -->
+    <aside id="journal" aria-label="Memory Journal" aria-hidden="true">
+      <div class="jhead"><h2>Memory Journal</h2><button id="journal-close" type="button" aria-label="Close journal">&times;</button></div>
+      <ol id="journal-list"></ol>
+    </aside>
 
-        <!-- Top HUD: warmth progress, journal, sound -->
-        <div id="hud" class="hidden">
-            <div class="warmth">
-                <span class="lanterns" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-                <span id="warmth-text">0 / 4 Kindnesses Shared</span>
-            </div>
-            <div class="hud-actions">
-                <button id="journal-btn" type="button" class="hud-btn">Memory Journal</button>
-                <button id="sound-btn" type="button" class="hud-btn icon" aria-label="Toggle sound (M)">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
-                        <path class="waves" d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" />
-                        <path class="slash" d="M4 4l16 16" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+    <!-- Title screen over the live rainy canvas -->
+    <section id="title" aria-labelledby="title-h">
+      <div class="title-card">
+        <h2 id="title-h">The Golden Umbrella</h2>
+        <p>One shared umbrella can turn a cold, rainy street into a golden evening.</p>
+        <button id="start-btn" type="button" class="glow-btn">Step Outside</button>
+      </div>
+    </section>
 
-        <!-- Memory Journal drawer -->
-        <aside id="journal" aria-label="Memory Journal" aria-hidden="true">
-            <div class="jhead">
-                <h2>Memory Journal</h2><button id="journal-close" type="button"
-                    aria-label="Close journal">&times;</button>
-            </div>
-            <ol id="journal-list"></ol>
-        </aside>
-
-        <!-- Title screen over the live rainy canvas -->
-        <section id="title" aria-labelledby="title-h">
-            <div class="title-card">
-                <h2 id="title-h">The Golden Umbrella</h2>
-                <p>One shared umbrella can turn a cold, rainy street into a golden evening.</p>
-                <button id="start-btn" type="button" class="glow-btn">Step Outside</button>
-            </div>
-        </section>
-
-        <div id="dialogue" class="hidden" role="dialog" aria-live="polite">
-            <div id="dlg-name"></div>
-            <p id="dlg-text"></p>
-            <div id="dlg-choices"></div>
-            <div id="dlg-input-row" class="hidden">
-                <input id="dlg-input" type="text" maxlength="60" placeholder="Or write your own thank-you…"
-                    aria-label="Custom thank-you">
-                <button id="dlg-send" type="button" class="btn">Send</button>
-            </div>
-        </div>
-    </main>
-
-    <div id="finale" class="modal hidden">
-        <div class="modal-card">
-            <h2>Welcome home. Maple Lane is glowing.</h2>
-            <label for="thanks-input">Who or what are you thankful for today?</label>
-            <input id="thanks-input" type="text" maxlength="120" placeholder="I am thankful for…">
-            <label for="name-input">Sign your name (optional)</label>
-            <input id="name-input" type="text" maxlength="24" placeholder="Your name">
-            <button id="create-btn" type="button" class="btn primary">Create My Keepsake Postcard</button>
-        </div>
+    <!-- On-screen controls (shown on touch devices while walking) -->
+    <div id="touch">
+      <div class="dpad">
+        <button id="t-left" type="button" aria-label="Move left">&#9664;</button>
+        <button id="t-right" type="button" aria-label="Move right">&#9654;</button>
+      </div>
+      <button id="t-act" type="button" aria-label="Interact">Tap</button>
     </div>
 
-    <div id="postcard-modal" class="modal hidden">
-        <div class="modal-card wide">
-            <canvas id="postcard" width="900" height="600" aria-label="Your Maple Lane postcard"></canvas>
-            <div class="row">
-                <button id="download-btn" type="button" class="btn primary">Download Postcard (PNG)</button>
-                <button id="copy-btn" type="button" class="btn">Copy Gratitude Note</button>
-                <button id="again-btn" type="button" class="btn">Play Again</button>
-            </div>
-        </div>
+    <div id="dialogue" class="hidden" role="dialog" aria-live="polite">
+      <div id="dlg-name"></div>
+      <p id="dlg-text"></p>
+      <div id="dlg-choices"></div>
+      <div id="dlg-input-row" class="hidden">
+        <input id="dlg-input" type="text" maxlength="60" placeholder="Or write your own thank-you…" aria-label="Custom thank-you">
+        <button id="dlg-send" type="button" class="btn">Send</button>
+      </div>
     </div>
+  </main>
 
-    <!-- Classic script on purpose: ES modules are blocked on file://, and this keeps "open index.html" working. -->
-    <script src="game.js"></script>
+  <div id="finale" class="modal hidden">
+    <div class="modal-card">
+      <h2>Welcome home. Maple Lane is glowing.</h2>
+      <label for="thanks-input">Who or what are you thankful for today?</label>
+      <input id="thanks-input" type="text" maxlength="120" placeholder="I am thankful for…">
+      <label for="name-input">Sign your name (optional)</label>
+      <input id="name-input" type="text" maxlength="24" placeholder="Your name">
+      <button id="create-btn" type="button" class="btn primary">Create My Keepsake Postcard</button>
+    </div>
+  </div>
+
+  <div id="postcard-modal" class="modal hidden">
+    <div class="modal-card wide">
+      <canvas id="postcard" width="900" height="600" aria-label="Your Maple Lane postcard"></canvas>
+      <div class="row">
+        <button id="download-btn" type="button" class="btn primary">Download Postcard (PNG)</button>
+        <button id="copy-btn" type="button" class="btn">Copy Gratitude Note</button>
+        <button id="again-btn" type="button" class="btn">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Classic script on purpose: ES modules are blocked on file://, and this keeps "open index.html" working. -->
+  <script src="game.js"></script>
 </body>
-
 </html>
