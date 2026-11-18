@@ -64,3 +64,10 @@ on top. Because rain is part of the cool scene only, it vanishes wherever the li
 ## Files
 
 `index.html` (markup, HUD, title, modals) · `style.css` (theme and UI) · `game.js` (the game) · `README.md`
+
+## Mobile & Responsive
+
+- The canvas scales to any screen width while keeping its 900x500 crisp rendering, and the page respects phone safe areas.
+- Touch devices get on-screen **left/right** buttons and a **Tap** button (hidden during dialogue). Tapping the scene also interacts when a neighbor is near.
+- On narrow screens the dialogue card moves below the canvas, buttons become large tap targets, and the HUD, journal drawer and modals tighten up.
+- In landscape on a phone the header is hidden so the game fills the screen. In portrait a small tip suggests rotating.
