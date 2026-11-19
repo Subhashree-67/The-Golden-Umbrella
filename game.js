@@ -1,3 +1,4 @@
+// ===== PART 1 of 5 - paste parts 1 to 5 in order, one after another, into the JS tab =====
 /**
  * @file THE GOLDEN UMBRELLA - Deluxe edition.
  * A cozy gratitude side-scroller in vanilla Canvas + Web Audio. No libraries, images or audio files.
@@ -105,6 +106,8 @@ function body(c, coat, hair, t) {
   c.restore();
 }
 
+// ===== end of PART 1 =====
+// ===== PART 2 of 5 - paste parts 1 to 5 in order, one after another, into the JS tab =====
 /* ==========================================================================
  * SoundEngine - rain, evolving music layers, chimes (all synthesised)
  * ========================================================================== */
@@ -143,6 +146,8 @@ class SoundEngine {
     const flt = this.ctx.createBiquadFilter(); flt.type = 'lowpass'; flt.frequency.value = 1800; flt.connect(this.master);
     [[f, 1], [f * 2, 0.25], [f * 4.01, 0.06]].forEach(([fr, a]) => this.tone(fr, dur, 'sine', vol * a, delay, flt));
   }
+  /** Pause/resume all audio (called when the tab is hidden or shown). */
+  suspend(hidden) { if (this.ctx) (hidden ? this.ctx.suspend() : this.ctx.resume()); }
   pop() { this.tone(440, 0.12, 'triangle', 0.07); this.tone(660, 0.1, 'triangle', 0.05, 0.05); }
   step() { this.tone(80 + Math.random() * 30, 0.07, 'triangle', 0.05); }
   /** Rising pentatonic music-box phrase; climbs higher with each kindness (n = 1..4). */
@@ -180,7 +185,6 @@ class SoundEngine {
     if (L >= 4) c.melody.forEach(([f, d]) => this.tone(f, 0.8, 'triangle', 0.05, d));
   }
 }
-
 /* ==========================================================================
  * LightZone - a warm region that expands outward like a shockwave
  * ========================================================================== */
@@ -280,6 +284,8 @@ class ParticleSystem {
   }
 }
 
+// ===== end of PART 2 =====//
+// ===== PART 3 of 5 - paste parts 1 to 5 in order, one after another, into the JS tab =====
 /* ==========================================================================
  * World - three parallax layers + the LightZone reveal
  * ========================================================================== */
@@ -303,7 +309,8 @@ class World {
   /** Composite: cool scene, then warm scene masked by the zones, then shockwave rings. */
   render(c, cam) {
     this.drawScene(c, cam, false);
-    if (!this.zones.length) return;
+    const R = CONFIG.zone.radius;
+    if (!this.zones.some((z) => z.x + R > cam && z.x - R < cam + W)) return;   // nothing lit on screen: skip the warm pass
     this.drawScene(this.wctx, cam, true);
     const m = this.mctx; m.clearRect(0, 0, W, H);
     this.zones.forEach((z) => z.paintMask(m, cam));
@@ -349,8 +356,7 @@ class World {
     }
     c.fillStyle = P.hedge; c.fillRect(off, GROUND - 16, W, 16);
   }
-  /** Layer 1.0x: sidewalk, buildings, trees, lamps, leaves and rain. */
-  paintNear(c, cam, P, warm) {
+  /** Layer 1.0x: sidewalk, buildings, trees, lamps, leaves and rain. */paintNear(c, cam, P, warm) {
     const vis = (x, w = 0) => x + w > cam - 80 && x < cam + W + 80;
     this.bakery(c, P, warm); this.homeHouse(c, P, warm); this.busStop(c, P, warm);
     [190, 640, 870, 1390, 1580, 1800, 2270].forEach((x) => vis(x - 70, 140) && this.tree(c, x, warm));
@@ -406,7 +412,6 @@ class World {
     if (warm) { glow(c, x, GROUND - 124, 110, '255,205,100', 0.55); circ(c, x, GROUND - 124, 5, '#fff2b8'); } else circ(c, x, GROUND - 124, 5, '#59647a');
   }
 }
-
 /* ==========================================================================
  * Player
  * ========================================================================== */
@@ -422,8 +427,7 @@ class Player {
       this.face = d; this.x = clamp(this.x + d * P.speed * dt, P.edge, WORLD_W - P.edge); this.walk += dt * 9;
       if ((this.stepT += dt) > P.stepInterval) { this.stepT = 0; sound.step(); }
     }
-  }
-  draw(c) {
+  }draw(c) {
     const bob = this.moving ? Math.abs(Math.sin(this.walk)) * 3 : 0, shiver = !this.aura && !this.moving ? Math.sin(this.t * 45) * 0.8 : 0;
     if (this.aura) glow(c, this.x, GROUND - 40, 72 + Math.sin(this.t * 3) * 8, '255,205,100', 0.55 + Math.sin(this.t * 3) * 0.1);
     c.save(); c.translate(this.x + shiver, GROUND - bob); c.scale(this.face, 1);
@@ -439,6 +443,8 @@ class Player {
   }
 }
 
+// ===== end of PART 3 =====
+// ===== PART 4 of 5 - paste parts 1 to 5 in order, one after another, into the JS tab =====
 /* ==========================================================================
  * NPC
  * ========================================================================== */
@@ -505,8 +511,7 @@ class InteractionManager {
     this.game = game; this.el = $('#dialogue'); this.nameEl = $('#dlg-name'); this.textEl = $('#dlg-text');
     this.choices = $('#dlg-choices'); this.row = $('#dlg-input-row'); this.input = $('#dlg-input'); this.send = $('#dlg-send');
   }
-  /** @param {string} name @param {string} text @param {{label:string,action:Function}[]} choices @param {(s:string)=>void} [onText] enables the custom text row */
-  show(name, text, choices, onText) {
+  /** @param {string} name @param {string} text @param {{label:string,action:Function}[]} choices @param {(s:string)=>void} [onText] enables the custom text row */show(name, text, choices, onText) {
     this.game.state = 'dialogue'; this.nameEl.textContent = name; this.textEl.textContent = text; this.choices.replaceChildren();
     choices.forEach((ch, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (i ? '' : ' primary');
@@ -524,6 +529,7 @@ class InteractionManager {
     document.activeElement?.blur();
   }
 }
+
 
 /* ==========================================================================
  * PostcardGenerator
@@ -564,8 +570,7 @@ class PostcardGenerator {
     for (let i = 0; i < 70; i++) { const x = rand() * PW, y = rand() * PH; c.beginPath(); c.moveTo(x, y); c.lineTo(x + rand() * 24 - 12, y + rand() * 24 - 12); c.stroke(); }
     const v = c.createRadialGradient(PW / 2, PH / 2, 300, PW / 2, PH / 2, 560); v.addColorStop(0, 'rgba(150,100,40,0)'); v.addColorStop(1, 'rgba(150,100,40,.22)');
     c.fillStyle = v; c.fillRect(0, 0, PW, PH);
-  }
-  /** Decorative autumn leaf frame. */
+  }/** Decorative autumn leaf frame. */
   leafBorder(c, PW, PH, rand) {
     const cols = ['#c8561a', '#e8892b', '#f2b134', '#a83d12', '#8f6b1e'], put = (x, y) => this.leaf(c, x, y, 9 + rand() * 7, rand() * 6.3, cols[(rand() * 5) | 0]);
     for (let x = 22; x < PW - 14; x += 28) { put(x, 20 + rand() * 8); put(x, PH - 20 - rand() * 8); }
@@ -626,6 +631,8 @@ class PostcardGenerator {
   }
 }
 
+// ===== end of PART 4 =====
+// ===== PART 5 of 5 - paste parts 1 to 5 in order, one after another, into the JS tab =====
 /* ==========================================================================
  * Game
  * ========================================================================== */
@@ -641,13 +648,13 @@ class Game {
   init(showTitle) {
     this.world = new World(); this.player = new Player(); this.npcs = STORY.map((d, i) => new NPC(d, i));
     this.gratitudeLog = []; this.cam = 0; this.porchShown = false; this.state = showTitle ? 'title' : 'play';
-    this.sound.setLayers(0); this.ui.close(); this.closeJournal();
+    this.sound.setLayers(0); this.ui.close(); this.closeJournal(); this.viewPct = null;
     ['#finale', '#postcard-modal'].forEach((s) => $(s).classList.add('hidden'));
     $('#title').classList.toggle('hidden', !showTitle); $('#hud').classList.toggle('hidden', showTitle);
     $('#thanks-input').value = ''; $('#name-input').value = ''; $('#copy-btn').textContent = 'Copy Gratitude Note';
     this.updateHUD();
-  }
-  startGame() {
+    if (showTitle) $('#start-btn').focus({ preventScroll: true });
+  }startGame() {
     this.sound.unlock(); this.sound.startRain(); this.sound.pop();
     $('#title').classList.add('hidden'); $('#hud').classList.remove('hidden'); this.state = 'play';
   }
@@ -656,6 +663,7 @@ class Game {
     window.addEventListener('keydown', (e) => this.onKey(e));
     window.addEventListener('keyup', (e) => this.keys.delete(e.key.toLowerCase()));
     window.addEventListener('blur', () => this.keys.clear());
+    document.addEventListener('visibilitychange', () => this.sound.suspend(document.hidden));
     this.canvas.addEventListener('click', () => { this.sound.unlock(); if (this.state === 'play') this.tryInteract(); });
     $('#start-btn').addEventListener('click', () => this.startGame());
     $('#sound-btn').addEventListener('click', () => { this.sound.unlock(); this.toggleMute(); });
@@ -668,7 +676,10 @@ class Game {
     $('#again-btn').addEventListener('click', () => this.init(false));
   }
   toggleMute() { $('#sound-btn').classList.toggle('muted', this.sound.toggleMute()); }
-  toggleJournal() { const o = $('#journal').classList.toggle('open'); $('#journal').setAttribute('aria-hidden', String(!o)); }
+  toggleJournal() {
+    const o = $('#journal').classList.toggle('open'); $('#journal').setAttribute('aria-hidden', String(!o));
+    if (o) $('#journal-btn').classList.remove('has-new');
+  }
   closeJournal() { $('#journal').classList.remove('open'); $('#journal').setAttribute('aria-hidden', 'true'); }
 
   onKey(e) {
@@ -682,6 +693,7 @@ class Game {
       if (e.repeat) return;
       const btns = this.ui.choices.querySelectorAll('button');
       if (k === 'e' || k === 'enter') {
+     
         e.preventDefault(); const a = document.activeElement;
         (a && a.tagName === 'BUTTON' && this.ui.choices.contains(a) ? a : btns[0])?.click();
       } else if (/^[1-9]$/.test(k) && btns[+k - 1]) { e.preventDefault(); btns[+k - 1].click(); }
@@ -695,8 +707,11 @@ class Game {
   /** Detect touch devices (CSS shows the on-screen controls) and wire the buttons. */
   initTouch() {
     const set = (on) => { this.touch = on; document.body.classList.toggle('touch', on); };
-    set(window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window);
-    window.addEventListener('touchstart', () => set(true), { once: true, passive: true });
+    // Phones report a coarse pointer. Touchscreen laptops don't, so they keep the keyboard UI until a finger actually touches
+    // the screen, and switch back as soon as a key is pressed.
+    set(window.matchMedia('(pointer: coarse)').matches);
+    window.addEventListener('touchstart', () => set(true), { passive: true });
+    window.addEventListener('keydown', () => { if (this.touch && !window.matchMedia('(pointer: coarse)').matches) set(false); });
     const hold = (id, key) => {
       const b = $(id), off = () => { this.keys.delete(key); b.classList.remove('down'); };
       b.addEventListener('pointerdown', (e) => { e.preventDefault(); this.sound.unlock(); this.keys.add(key); b.classList.add('down'); });
@@ -716,7 +731,7 @@ class Game {
   cont() { return { label: 'Continue', action: () => this.ui.close() }; }
 
   interact(npc) {
-    this.sound.unlock(); this.sound.pop();
+    this.sound.unlock(); this.sound.pop(); if (this.touch) navigator.vibrate?.(15);
     if (npc.id === 'elder') {
       const fin = (t, custom) => {
         this.complete(npc, t, 'you');
@@ -738,7 +753,7 @@ class Game {
     this.world.activate(npc.x); this.world.particles.shockwave(npc.x, GROUND - 50); this.world.particles.icons(npc.x, GROUND - 90, 10);
     if (npc.id === 'elder') this.player.aura = true;
     if (npc.id === 'baker') this.world.bakeryOpen = true;
-    const n = this.gratitudeLog.length; this.sound.kindness(n); this.sound.setLayers(n); this.updateHUD();
+    const n = this.gratitudeLog.length; this.sound.kindness(n); this.sound.setLayers(n); this.updateHUD(); this.celebrate(n);
   }
   checkPorch() {
     const d = Math.abs(this.player.x - PORCH_X), I = CONFIG.interact;
@@ -768,8 +783,19 @@ class Game {
     try { await navigator.clipboard.writeText(text); }
     catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
     btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy Gratitude Note'; }, 1800);
+  }/** Toast, haptics and a journal badge after each kindness. */
+  celebrate(n) {
+    this.toast(n < this.npcs.length ? `Kindness ${n} of ${this.npcs.length} shared \u00B7 saved to your journal` : 'Maple Lane is glowing! Head home to the end of the street \u2192');
+    $('#journal-btn').classList.add('has-new'); if (this.touch) navigator.vibrate?.([30, 40, 30]);
   }
-
+  toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); }
+  /** Narrow/tall screens crop the canvas (object-fit: cover); pan the crop so the player stays in view. */
+  fitView() {
+    const cv = this.canvas, cw = cv.clientWidth, ch = cv.clientHeight; if (!cw || !ch) return;
+    const visW = Math.min(W, cw * H / ch); let pct = 50;
+    if (visW < W) { const px = this.state === 'title' ? W / 2 : this.player.x - this.cam; pct = clamp(px - visW / 2, 0, W - visW) / (W - visW) * 100; }
+    this.viewPct = lerp(this.viewPct ?? pct, pct, 0.2); cv.style.objectPosition = `${this.viewPct.toFixed(2)}% 50%`;
+  }
   /** Refresh lanterns, progress text and the Memory Journal list. */
   updateHUD() {
     const n = this.gratitudeLog.length;
@@ -809,6 +835,7 @@ class Game {
     c.restore();
     const v = c.createRadialGradient(W / 2, H / 2, 250, W / 2, H / 2, 560); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.28)'); c.fillStyle = v; c.fillRect(0, 0, W, H);
     if (this.state === 'play' && !this.player.aura) { c.font = '14px Georgia'; c.textAlign = 'center'; c.fillStyle = 'rgba(230,238,250,.8)'; c.fillText('Brr... find the neighbor at the bus stop \u2192', W / 2, 78); c.textAlign = 'left'; }
+    this.fitView();
   }
   drawPrompt(c, x) {
     const y = GROUND - 120 + Math.sin(performance.now() / 300) * 3, txt = this.touch ? '[Tap to Interact]' : '[Press E or Click]';
@@ -818,3 +845,4 @@ class Game {
 }
 
 window.addEventListener('DOMContentLoaded', () => { window.game = new Game(); });
+// ===== end of PART 5 =====
