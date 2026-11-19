@@ -31,7 +31,7 @@
         <span id="warmth-text">0 / 4 Kindnesses Shared</span>
       </div>
       <div class="hud-actions">
-        <button id="journal-btn" type="button" class="hud-btn">Memory Journal</button>
+        <button id="journal-btn" type="button" class="hud-btn"><span class="long">Memory </span>Journal</button>
         <button id="sound-btn" type="button" class="hud-btn icon" aria-label="Toggle sound (M)">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>
@@ -41,6 +41,8 @@
         </button>
       </div>
     </div>
+
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <!-- Memory Journal drawer -->
     <aside id="journal" aria-label="Memory Journal" aria-hidden="true">
@@ -54,6 +56,7 @@
         <h2 id="title-h">The Golden Umbrella</h2>
         <p>One shared umbrella can turn a cold, rainy street into a golden evening.</p>
         <button id="start-btn" type="button" class="glow-btn">Step Outside</button>
+        <small>Best with sound on</small>
       </div>
     </section>
 
@@ -89,7 +92,7 @@
   </div>
 
   <div id="postcard-modal" class="modal hidden">
-    <div class="modal-card wide">
+  <div class="modal-card wide">
       <canvas id="postcard" width="900" height="600" aria-label="Your Maple Lane postcard"></canvas>
       <div class="row">
         <button id="download-btn" type="button" class="btn primary">Download Postcard (PNG)</button>
