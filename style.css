@@ -88,8 +88,7 @@ input[type="text"] {
 .warmth, .hud-actions { display: flex; align-items: center; gap: 10px; }
 .lanterns { display: inline-flex; gap: 6px; }
 .lanterns i { width: 10px; height: 15px; border-radius: 4px 4px 5px 5px; background: #3a4558; border: 1px solid #55627a; transition: background .6s, box-shadow .6s; }
-.lanterns i.lit { background: #ffd27a; border-color: #ffe9a6; box-shadow: 0 0 10px 2px rgba(255,200,90,.85); }
-.hud-btn {
+.lanterns i.lit { background: #ffd27a; border-color: #ffe9a6; box-shadow: 0 0 10px 2px rgba(255,200,90,.85); }.hud-btn {
   font: inherit; color: #f3e3b8; background: rgba(20,26,38,.55); border: 1px solid rgba(255,226,154,.35);
   border-radius: 999px; padding: 4px 14px; cursor: pointer; backdrop-filter: blur(4px);
 }
@@ -157,7 +156,6 @@ body.touch #controls { display: none; }
 #touch button.down, #touch button:active { background: rgba(255,200,90,.55); color: #3a2410; }
 .dpad { display: flex; gap: 12px; }
 #t-act { font-size: 1rem; width: 64px; height: 64px; }
-
 @media (max-width: 640px) {
   body { padding-top: 10px; }
   .sub { display: none; }
@@ -181,4 +179,47 @@ body.touch #controls { display: none; }
   #stage { max-width: min(900px, calc((100vh - 12px) * 1.8)); }
   #dialogue { left: 2%; right: 2%; bottom: 2%; padding: 8px 12px; max-height: 70%; overflow-y: auto; }
   #dlg-text { font-size: .85rem; margin-bottom: 6px; }
+}
+
+/* ---------- UX polish ---------- */
+html { touch-action: manipulation; }
+#game { object-fit: cover; }
+input[type="text"] { -webkit-user-select: text; user-select: text; }   /* iOS can't type into user-select:none inputs */
+.title-card small { display: block; margin-top: 14px; color: #9fb0c8; font-style: italic; }
+
+#toast {
+  position: absolute; top: 52px; left: 50%; z-index: 3; transform: translate(-50%, -8px); max-width: 88%;
+  padding: 8px 18px; border-radius: 999px; text-align: center; font-size: .9rem; color: #4a2a10;
+  background: linear-gradient(#ffe29a, #f2b134); box-shadow: 0 6px 22px rgba(255,190,80,.45);
+  opacity: 0; pointer-events: none;
+}
+#toast.show { animation: toast 3.8s ease forwards; }
+@keyframes toast { 0% { opacity: 0; transform: translate(-50%, -8px); } 8%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -4px); } }
+.hud-btn { position: relative; }
+.hud-btn.has-new::after { content: ""; position: absolute; top: -2px; right: -2px; width: 9px; height: 9px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 8px 2px rgba(255,200,90,.9); }
+#t-act { background: linear-gradient(#ffd97a, #f2b134); color: #4a2a10; border-color: #ffe9a6; box-shadow: 0 0 16px rgba(255,200,90,.45); }
+#t-act.down, #t-act:active { background: #fff0b8; }
+
+@media (max-width: 420px) { .long { display: none; } }
+
+/* Portrait phones: taller, zoomed-in scene; controls move below it so thumbs never hide the street */
+@media (max-width: 640px) and (orientation: portrait) {
+  #game { aspect-ratio: 5 / 4; }
+  #touch { position: static; padding: 12px 16px 16px; background: linear-gradient(#1b2330, #141a25); border-top: 1px solid #33405a; }
+  #touch button { width: 78px; height: 64px; border-radius: 20px; }
+  #touch #t-act { width: 92px; height: 64px; border-radius: 32px; font-size: 1.05rem; }
+  .dpad { gap: 14px; }
+  input[type="text"] { font-size: 16px; }                              /* prevents iOS focus-zoom */
+  #dialogue { max-height: 55vh; max-height: 55dvh; }
+  #toast { top: 44px; font-size: .8rem; }
+}
+
+/* Phones in landscape: dialogue floats over the scene again (overrides the narrow-screen rule above) */
+@media (max-height: 500px) and (orientation: landscape) {
+  #dialogue { position: absolute; border-width: 2px; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+  #dlg-choices .btn { flex: 0 1 auto; }
+  #touch button { width: 52px; height: 52px; }
+  #t-act { width: 60px; height: 60px; }
+  #toast { top: 40px; }
+  .modal-card { max-height: 96vh; overflow-y: auto; }
 }
